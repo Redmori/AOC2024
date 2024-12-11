@@ -1,3 +1,5 @@
+package Day2;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -78,7 +80,7 @@ public class Main {
 
     private static ArrayList<ArrayList<Integer>> readInput() {
         ArrayList<ArrayList<Integer>> reports = new ArrayList<>();
-        File inputFile = new File("reports.txt");
+        File inputFile = new File("src/Day2/reports.txt");
         try {
             Scanner scanner = new Scanner(inputFile);
             while (scanner.hasNextLine()) {

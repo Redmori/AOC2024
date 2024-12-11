@@ -1,3 +1,5 @@
+package Day1;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Array;
@@ -24,7 +26,7 @@ public class Main {
         ArrayList<Integer> locationsLeft = new ArrayList<Integer>();
         ArrayList<Integer> locationsRight = new ArrayList<Integer>();
 
-        File inputFile = new File("locations.txt");
+        File inputFile = new File("src/Day1/locations.txt");
         try {
             Scanner scanner = new Scanner(inputFile);
             while (scanner.hasNextLine()) {
