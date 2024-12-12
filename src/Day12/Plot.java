@@ -8,15 +8,20 @@ public class Plot {
     char type;
 
     ArrayList<Plot> group;
-    Plot North;
-    Plot East;
-    Plot South;
-    Plot West;
+    boolean[] borders = new boolean[]{true,true,true,true};
 
 
     public Plot(int i, int j , char t){
         x = j;
         y = i;
         type = t;
+    }
+
+
+    enum border{
+        NORTH,
+        EAST,
+        SOUTH,
+        WEST
     }
 }

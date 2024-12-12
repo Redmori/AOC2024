@@ -43,4 +43,13 @@ public class AOC {
         }
     }
 
+    public static void printIntMap(int[][] input){
+        for(int[] row : input){
+            for(int c : row){
+                System.out.print(c);
+            }
+            System.out.println();
+        }
+    }
+
 }
