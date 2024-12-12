@@ -26,4 +26,21 @@ public class AOC {
         }
     }
 
+    public static char[][] convertStringToChar(String[] input){
+        char[][] converted = new char[input.length][input[0].length()];
+        for(int i = 0; i < input.length; i++){
+            converted[i] = input[i].toCharArray();
+        }
+        return converted;
+    }
+
+    public static void printInput(char[][] input){
+        for(char[] row : input){
+            for(char c : row){
+                System.out.print(c);
+            }
+            System.out.println();
+        }
+    }
+
 }
