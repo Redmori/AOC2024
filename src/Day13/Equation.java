@@ -14,14 +14,13 @@ public class Equation {
         c3 = _c3;
         c4 = _c4;
         d1 = _d1;
-        System.out.println(d1);
         d2 = _d2;
     }
 
 
     public long[] evaluate(){
         long[] results = new long[2];
-        System.out.println(d1);
+        //System.out.println(d1);
         long denominator = c1 * c4 - c2 * c3;
         long numerator1 = c4 * d1 - c2 * d2;
         long numerator2 = c1 * d2 - c3 * d1;

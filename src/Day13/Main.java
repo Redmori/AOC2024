@@ -46,7 +46,7 @@ public class Main {
 
             Equation newEquation = new Equation(eqp1[0], eqp2[0], eqp1[1], eqp2[1], eqp3[0] + 10000000000000L, eqp3[1] + 10000000000000L);
             equations.add(newEquation);
-            System.out.println(newEquation);
+            //System.out.println(newEquation);
         }
         return equations;
     }
