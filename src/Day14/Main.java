@@ -2,9 +2,7 @@ package Day14;
 
 import AOCutil.AOC;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) {
@@ -27,23 +25,25 @@ public class Main {
 
         ArrayList<Robot> robotsP2 = generateRobots(input);
 
-        ArrayList<char[][]> images = findPossibleTrees(robotsP2, sizeX, sizeY);
+        int s = findTree(robotsP2, sizeX, sizeY);
+        System.out.println("Day 14 Part 2: " + s);
     }
 
-    private static ArrayList<char[][]> findPossibleTrees(ArrayList<Robot> robotsP2, int sizeX, int sizeY) {
-        ArrayList<char[][]> possibilities = new ArrayList<>();
-        for(int s = 1; s < 58660; s++){
+    private static int findTree(ArrayList<Robot> robotsP2, int sizeX, int sizeY) {
+        int lowestSafety = Integer.MAX_VALUE;
+        int bestTime = 0;
+        char[][] bestMap = new char[0][];
+        for(int s = 1; s < 100000; s++){
             moveRobots(robotsP2, 1, sizeX, sizeY);
             int safety = calculateSafety(robotsP2, sizeX, sizeY);
-            if (safety < 126445970){
-                char[][] map = generateMap(robotsP2, sizeX, sizeY);
-                possibilities.add(map);
-                AOC.printInput(map);
-                System.out.println("Day 14 Part 2: " + s + " with safety " + safety);
-                break;
+            if (safety < lowestSafety){
+                lowestSafety = safety;
+                bestTime = s;
+                bestMap = generateMap(robotsP2, sizeX, sizeY);
             }
         }
-        return possibilities;
+        AOC.printInput(bestMap);
+        return bestTime;
     }
 
     private static char[][] generateMap(ArrayList<Robot> robots, int sizeX, int sizeY){
