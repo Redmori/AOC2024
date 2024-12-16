@@ -52,4 +52,25 @@ public class AOC {
         }
     }
 
+    public static boolean[][] convertCharToBoolean(char[][] chars, char trueToken) {
+        boolean[][] bool = new boolean[chars.length][chars[0].length];
+        for (int i = 0; i < chars.length; i++) {
+            for (int j = 0; j < chars[0].length; j++) {
+                bool[i][j] = chars[i][j] == trueToken;
+            }
+        }
+        return bool;
+    }
+
+    public static void printBoolMap(boolean[][] map){
+        for(boolean[] row : map){
+            for(boolean cell : row){
+                if(cell)
+                    System.out.print("X");
+                else
+                    System.out.print(".");
+            }
+            System.out.println();
+        }
+    }
 }
