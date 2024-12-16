@@ -177,9 +177,7 @@ public class Main {
         int newY = yPos + move[1];
         if(map[yPos][xPos] == '[') {
             //System.out.println("[ found");
-            //TODO horizontal movement to the right?
             if(move[0] == 1){
-                //TODO check if we can move 2 steps?
                 if(isOpen(map, xPos + 2 * move[0], yPos)){
                     ArrayList<int[]> freshList = new ArrayList<>();
                     freshList.add(new int[]{xPos,yPos});
@@ -229,7 +227,6 @@ public class Main {
                 return movables;
             }
         }else if(map[yPos][xPos] == ']') {
-            //TODO horizontal movement to the left? return empty arraylist?
 //            if(move[0] == -1){
 //                return new ArrayList<>();
 //            }else {
