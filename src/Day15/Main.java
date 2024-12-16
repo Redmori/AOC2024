@@ -2,6 +2,7 @@ package Day15;
 
 import AOCutil.AOC;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Main {
@@ -10,7 +11,7 @@ public class Main {
     public static int y;
 
     public static void main(String[] args) {
-        String[] input = AOC.input("src/Day15/p2sampleinput.txt");
+        String[] input = AOC.input("src/Day15/input.txt");
         AOC.printInput(input);
         char[][] convertedInput = AOC.convertStringToChar(input);
 
@@ -31,8 +32,15 @@ public class Main {
         char[][] convertedInput2 = AOC.convertStringToChar(input);
         char[][] map2 = getMapFromInput(convertedInput2);
         char[][] wideMap = convertToWide(map2);
-        AOC.printInput(wideMap);
+        //AOC.printInput(wideMap);
+        ArrayList<Character> moves2 = getMovesFromInput(convertedInput2);
+        findRobot(wideMap);
 
+        moveAll2(wideMap,moves2);
+        System.out.println("Final situation");
+        AOC.printInput(wideMap);
+        int part2 = getSumOfGPS(wideMap);
+        System.out.println("Day 15 Part 2: " + part2);
 
     }
 
@@ -60,6 +68,10 @@ public class Main {
 
     private static void moveAll(char[][] map, ArrayList<Character> moves) {
         while (attemptMove(map, moves)) ;
+    }
+
+    private static void moveAll2(char[][] map, ArrayList<Character> moves) {
+        while (attemptMove2(map, moves)) ;
     }
 
     private static int getSumOfGPS(char[][] map) {
@@ -101,7 +113,7 @@ public class Main {
 
     private static boolean attemptMove(char[][] map, ArrayList<Character> moves) {
         int[] move = getMove(moves);
-        System.out.println("move direction : " + move[0] + "," + move[1]);
+        //System.out.println("move direction : " + move[0] + "," + move[1]);
 
         if (isOpen(map, x + move[0], y + move[1])) {
             map[y][x] = '.';
@@ -117,6 +129,116 @@ public class Main {
         moves.removeFirst();
         return !moves.isEmpty();
 
+    }
+
+    private static boolean attemptMove2(char[][] map, ArrayList<Character> moves) {
+        int[] move = getMove(moves);
+
+        //AOC.printInput(map);
+        //System.out.println("move direction : " + move[0] + "," + move[1]);
+
+        if (isOpen(map, x + move[0], y + move[1])) {
+            map[y][x] = '.';
+            map[y + move[1]][x + move[0]] = '@';
+            x += move[0];
+            y += move[1];
+        } else{
+            ArrayList<int[]> movingObjects = isMovable2(map, x + move[0], y + move[1], move); //only [
+            if(movingObjects != null) {
+                //System.out.println("list size: " + movingObjects.size());
+                for(int[] object : movingObjects){
+                    if(map[object[1]][object[0]] == '['){
+                        map[object[1]][object[0]] = '.';
+                    }
+                    if( map[object[1]][object[0] + 1] == ']') {
+                        map[object[1]][object[0] + 1] = '.';
+                    }
+                    map[object[1] + move[1]][object[0] + move[0]] = '[';
+                    map[object[1] + move[1]][object[0] + move[0] + 1] = ']';
+                }
+
+                map[y][x] = '.';
+                map[y + move[1]][x + move[0]] = '@';
+                x += move[0];
+                y += move[1];
+            }
+        }
+
+        moves.removeFirst();
+        return !moves.isEmpty();
+
+    }
+
+    private static ArrayList<int[]> isMovable2(char[][] map, int xPos, int yPos, int[] move) {
+        //System.out.println(xPos + "," + yPos);
+        if (map[yPos][xPos] == '#')
+            return null;
+        int newX = xPos + move[0];
+        int newY = yPos + move[1];
+        if(map[yPos][xPos] == '[') {
+            //System.out.println("[ found");
+            //TODO horizontal movement to the right?
+            if(move[0] == 1){
+                //TODO check if we can move 2 steps?
+                if(isOpen(map, xPos + 2 * move[0], yPos)){
+                    ArrayList<int[]> freshList = new ArrayList<>();
+                    freshList.add(new int[]{xPos,yPos});
+                    return freshList;
+                }
+                ArrayList<int[]> movableToRight = isMovable2(map, xPos + 2, yPos, move);
+                if(movableToRight == null){
+                    return null;
+                }
+                else{
+                    movableToRight.add(new int[]{xPos,yPos});
+                    return movableToRight;
+                }
+            }
+            ArrayList<int[]> movingList;
+            if ((isOpen(map, newX, newY) && isOpen(map,newX + 1, newY)) || (isOpen(map, newX, newY) && move[0] == -1)) {
+                //System.out.println("open, adding to list");
+                movingList = new ArrayList<>();
+                movingList.add(new int[]{xPos, yPos});
+                return movingList;
+            }
+            else{
+                //System.out.println("regular block check");
+                ArrayList<int[]> movableLeft = isMovable2(map, newX, newY, move);
+                ArrayList<int[]> movableRight;
+                ArrayList<int[]> movables;
+                if(move[0] == - 1){
+                    movableRight = new ArrayList<>();
+                }else {
+                    movableRight = isMovable2(map, newX + 1, newY, move);
+                }
+                if((movableLeft == null && !isOpen(map, newX, newY)) || (movableRight == null && !isOpen(map,newX + 1, newY))){
+                    //System.out.println("no path found");
+                    return null;
+                } else if (isOpen(map, newX, newY) && movableRight != null) {
+                    movables = movableRight;
+                } else if (isOpen(map,newX + 1, newY) && movableLeft != null){
+                    movables = movableLeft;
+                } else{
+                    movables = movableLeft;
+                    movables.addAll(movableRight);
+                }
+
+
+                //System.out.println("adding [ to list");
+                movables.add(new int[]{xPos, yPos});
+                return movables;
+            }
+        }else if(map[yPos][xPos] == ']') {
+            //TODO horizontal movement to the left? return empty arraylist?
+//            if(move[0] == -1){
+//                return new ArrayList<>();
+//            }else {
+            //System.out.println("] found, looking at [");
+                return isMovable2(map, xPos - 1, yPos, move);
+//            }
+        }
+        //System.out.println("end reached");
+        return null;
     }
 
     private static boolean isMovable(char[][] map, int xPos, int yPos, int[] move) {
