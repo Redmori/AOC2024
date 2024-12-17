@@ -9,41 +9,29 @@ public class Main {
 
     static boolean[][] map;
     static int[] target;
-    static int[][] optimizedMap;
 
     static int[][][] g;
     static int[][] h;
 
     static TreeSet<Location> openList = new TreeSet<>();
 
-    //static ArrayList<Location> altRoutes = new ArrayList<>();
-
-    //static ArrayList<Location>[][][] routeMap; //TODO update this route map, clear the arraylist if you find a better route, otherwise add Locations to it when its equal
 
     static Location[][][] locationMap;
 
     public static void main(String[] args) {
-        String[] input = AOC.input("src/Day16/test3.txt");
+        String[] input = AOC.input("src/Day16/input.txt");
 
         char[][] mapChar = AOC.convertStringToChar(input);
         map = AOC.convertCharToBoolean(mapChar, '#');
 
-        //optimizedMap = createOptimzedMap(map);
 
         AOC.printBoolMap(map);
 
-        //Reindeer reindeer = findReindeer(mapChar);
 
         target = findExit(mapChar);
         System.out.println("target = " + target[0] + "," + target[1]);
 
-//        ArrayList<Reindeer> reindeerList = new ArrayList<>();
-//        reindeerList.add(reindeer);
-//        reindeer.x -= 1;
-//        moveAllReindeer(reindeerList);
-//
-//        int p1 = findLowestScore(reindeerList) ;
-//        System.out.println("Pay 16 Part 1: " + p1);
+
 
         g = new int[map.length][map[0].length][4];
         maximizeMap(g);
@@ -71,7 +59,6 @@ public class Main {
         }
         System.out.println("Day 16 Part 1: " + score);
 
-        //System.out.println("nr Alternative routes: " + altRoutes.size());
 
         int sum = calculatePaths(finishedLocation) + 1;
 
@@ -82,7 +69,7 @@ public class Main {
     }
 
     private static int calculatePaths(Location finishLocation) {
-        boolean[][] visited = new boolean[g.length][g[0].length];
+        boolean[][][] visited = new boolean[g.length][g[0].length][g[0][0].length];
 
         updateVisited(visited,finishLocation);
 
@@ -94,8 +81,8 @@ public class Main {
         return sum;
     }
 
-    private static void updateVisited(boolean[][] visited, Location location){
-        visited[location.y][location.x] = true;
+    private static void updateVisited(boolean[][][] visited, Location location){
+        visited[location.y][location.x][location.direction] = true;
         if(location.previous != null) {
             updateVisited(visited, location.previous);
         }
@@ -246,9 +233,5 @@ public class Main {
 
     public static boolean isWall(int y, int x){
         return map[y][x];
-    }
-
-    public static boolean isWall(int[] loc){
-        return isWall(loc[0],loc[1]);
     }
 }

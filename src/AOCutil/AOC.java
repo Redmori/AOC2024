@@ -74,11 +74,37 @@ public class AOC {
         }
     }
 
-    public static int countBoolean(boolean[][] map) {
+    public static void printBoolMap(boolean[][][] map){
+        for(boolean[][] row : map){
+            for(boolean[] cell : row){
+                boolean found = false;
+                for(boolean direction : cell){
+                    if(direction){
+                        found = true;
+                    }
+                }
+                if(found)
+                    System.out.print("X");
+                else
+                    System.out.print(".");
+            }
+            System.out.println();
+        }
+    }
+
+    public static int countBoolean(boolean[][][] map) {
         int sum = 0;
-        for(boolean[] row : map){
-            for(boolean cell : row){
-                sum += cell ? 1 : 0;
+        for(boolean[][] row : map){
+            for(boolean cell[] : row){
+                boolean found = false;
+                for(boolean direction : cell){
+                    if(direction){
+                        found = true;
+                    }
+                }
+                if(found){
+                    sum++;
+                }
             }
         }
         return sum;
