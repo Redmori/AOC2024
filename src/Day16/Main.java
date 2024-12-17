@@ -3,6 +3,7 @@ package Day16;
 import AOCutil.AOC;
 
 import java.util.ArrayList;
+import java.util.TreeSet;
 
 public class Main {
 
@@ -13,11 +14,16 @@ public class Main {
     static int[][][] g;
     static int[][] h;
 
-    static ArrayList<Location> openList = new ArrayList<>();
-    static ArrayList<Location> closedList = new ArrayList<>();
+    static TreeSet<Location> openList = new TreeSet<>();
+
+    //static ArrayList<Location> altRoutes = new ArrayList<>();
+
+    //static ArrayList<Location>[][][] routeMap; //TODO update this route map, clear the arraylist if you find a better route, otherwise add Locations to it when its equal
+
+    static Location[][][] locationMap;
 
     public static void main(String[] args) {
-        String[] input = AOC.input("src/Day16/sampleinput.txt");
+        String[] input = AOC.input("src/Day16/test3.txt");
 
         char[][] mapChar = AOC.convertStringToChar(input);
         map = AOC.convertCharToBoolean(mapChar, '#');
@@ -44,6 +50,8 @@ public class Main {
 
         h = new int[map.length][map[0].length];
 
+        locationMap = new Location[map.length][map[0].length][4];
+
         int[] reindeerStart = findReindeerStart(mapChar);
 
         printDirectionMap(g , 0);
@@ -55,22 +63,51 @@ public class Main {
 
         Location finishedLocation = processOpenList();
 
-        printDirectionMap(g , 1);
+        printOptimalMap(g);
 
         int score = 0;
         if(finishedLocation != null){
-            score = finishedLocation.score;
+            score = finishedLocation.score + 1;
         }
         System.out.println("Day 16 Part 1: " + score);
 
+        //System.out.println("nr Alternative routes: " + altRoutes.size());
+
+        int sum = calculatePaths(finishedLocation) + 1;
+
+        System.out.println("Day 16 Part 2: " + sum);
 
 
 
     }
 
+    private static int calculatePaths(Location finishLocation) {
+        boolean[][] visited = new boolean[g.length][g[0].length];
+
+        updateVisited(visited,finishLocation);
+
+        int sum = AOC.countBoolean(visited);
+
+
+        AOC.printBoolMap(visited);
+
+        return sum;
+    }
+
+    private static void updateVisited(boolean[][] visited, Location location){
+        visited[location.y][location.x] = true;
+        if(location.previous != null) {
+            updateVisited(visited, location.previous);
+        }
+        if(location.alternative != null){
+            updateVisited(visited, location.alternative);
+        }
+    }
+
     private static Location processOpenList(){
         int i = 0;
-        while(i < 10000){
+        while(openList.size() > 0){
+            //System.out.println("openlist size: " + openList.size());
             if(move(openList.getFirst())){
                 System.out.println("TARGET FOUND");
                 return openList.getFirst();
@@ -97,18 +134,48 @@ public class Main {
     }
 
     private static void printDirectionMap(int[][][] g, int direction) {
+        int maxWidth = 6; // Fixed width for numbers (adjust as needed)
+        String format = "%-" + maxWidth + "s"; // Left-aligned fixed width
+
         for (int i = 0; i < g.length; i++) {
             for (int j = 0; j < g[0].length; j++) {
-                System.out.print(g[i][j][direction] + " ");
+                int value = g[i][j][direction];
+                if(value == Integer.MAX_VALUE) {
+                    System.out.printf(format, "X");
+                }else{
+                    System.out.printf(format, value);
+                }
             }
             System.out.println();
         }
     }
 
-    private static void rotateInPlace(int[] position, Location oldLocation){
+    private static void printOptimalMap(int[][][] g) {
+        int maxWidth = 6; // Fixed width for numbers (adjust as needed)
+        String format = "%-" + maxWidth + "s"; // Left-aligned fixed width
+
+        for (int i = 0; i < g.length; i++) {
+            for (int j = 0; j < g[0].length; j++) {
+                int value = Integer.MAX_VALUE;
+                for (int k = 0; k < g[0][0].length; k++) {
+                    if (g[i][j][k] < value){
+                        value = g[i][j][k];
+                    }
+                }
+                if(value == Integer.MAX_VALUE) {
+                    System.out.printf(format, "X");
+                }else{
+                    System.out.printf(format, value);
+                }
+            }
+            System.out.println();
+        }
+    }
+
+    private static void rotateInPlace(int[] position, Location oldLocation, int score){
         int currentScore = getG(position);
-        updateG(new int[]{position[0], position[1], newDirection(position[2],true)}, oldLocation, 1000);
-        updateG(new int[]{position[0], position[1], newDirection(position[2],false)}, oldLocation, 1000);
+        updateG(new int[]{position[0], position[1], newDirection(position[2],true)}, oldLocation, score - (oldLocation == null ? 0 : oldLocation.score)  + 1000);
+        updateG(new int[]{position[0], position[1], newDirection(position[2],false)}, oldLocation, score - (oldLocation == null ? 0 : oldLocation.score)  + 1000);
     }
 
     public static int getG(int[] position){
@@ -137,15 +204,21 @@ public class Main {
     }
 
     private static void updateG(int[] location, Location oldLocation, int deltaScore) {
-        System.out.println(location[0] + "," + location[1] + "," + location[2]);
+        //System.out.println(location[0] + "," + location[1] + "," + location[2]);
         int score = (oldLocation == null ? 0 : oldLocation.score) + deltaScore;
         if(score < g[location[0]][location[1]][location[2]]) {
             g[location[0]][location[1]][location[2]] = score;
-            Location newLocation = new Location(location,score);
+            Location newLocation = new Location(location, score);
             newLocation.previous = oldLocation;
             openList.add(newLocation);
+            locationMap[location[0]][location[1]][location[2]] = newLocation;
 
-            rotateInPlace(location, oldLocation);
+            rotateInPlace(location, oldLocation, score);
+
+        } else if (score == g[location[0]][location[1]][location[2]]) {
+            Location newLocation = new Location(location, score);
+            newLocation.previous = oldLocation;
+            locationMap[location[0]][location[1]][location[2]].alternative = newLocation;
         }
     }
 

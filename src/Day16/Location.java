@@ -1,12 +1,14 @@
 package Day16;
 
-public class Location {
+public class Location implements Comparable<Location> {
     int x;
     int y;
     int direction;
     int score;
 
     Location previous;
+
+    Location alternative;
 
     public Location(int[] loc, int _score){
         y = loc[0];
@@ -34,5 +36,22 @@ public class Location {
             case 2 -> new int[]{1, 0};
             default -> new int[]{0, -1};
         };
+    }
+
+    @Override
+    public int compareTo(Location o) {
+        int scoreComparison = Integer.compare(this.score, o.score);
+
+        if (scoreComparison == 0) {
+            scoreComparison =  Integer.compare(this.x, o.x);
+        }
+        if (scoreComparison == 0) {
+            scoreComparison =  Integer.compare(this.y, o.y);
+        }
+        if (scoreComparison == 0) {
+            scoreComparison =  Integer.compare(this.direction, o.direction);
+        }
+
+        return scoreComparison;
     }
 }

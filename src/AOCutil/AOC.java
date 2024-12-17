@@ -73,4 +73,14 @@ public class AOC {
             System.out.println();
         }
     }
+
+    public static int countBoolean(boolean[][] map) {
+        int sum = 0;
+        for(boolean[] row : map){
+            for(boolean cell : row){
+                sum += cell ? 1 : 0;
+            }
+        }
+        return sum;
+    }
 }
