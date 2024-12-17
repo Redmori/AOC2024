@@ -47,28 +47,28 @@ public class Reindeer {
         }
     }
 
-    public int[] getNextLocation(){
-        int newX = x + Main.directionToMove(direction)[0];
-        int newY = y + Main.directionToMove(direction)[1];
-        return new int[]{newX, newY};
-    }
-
-    public int[] getRightLocation(){
-        int newX = x + Main.directionToMove(newDirection(1))[0];
-        int newY = y + Main.directionToMove(newDirection(1))[1];
-
-        //System.out.println("right location " + newX + "," + newY + " after moving into " + Main.directionToMove(newDirection(1))[0] + "," +  Main.directionToMove(newDirection(1))[1]);
-        return new int[]{newX, newY};
-    }
-
-    public int[] getLeftLocation(){
-        int newX = x + Main.directionToMove(newDirection(-1))[0];
-        int newY = y + Main.directionToMove(newDirection(-1))[1];
-        //System.out.println("left location " + newX + "," + newY + " after moving into " + Main.directionToMove(newDirection(-1))[0] + "," +  Main.directionToMove(newDirection(-1))[1]);
-
-        return new int[]{newX, newY};
-
-    }
+//    public int[] getNextLocation(){
+//        int newX = x + Main.directionToMove(direction)[0];
+//        int newY = y + Main.directionToMove(direction)[1];
+//        return new int[]{newX, newY};
+//    }
+//
+//    public int[] getRightLocation(){
+//        int newX = x + Main.directionToMove(newDirection(1))[0];
+//        int newY = y + Main.directionToMove(newDirection(1))[1];
+//
+//        //System.out.println("right location " + newX + "," + newY + " after moving into " + Main.directionToMove(newDirection(1))[0] + "," +  Main.directionToMove(newDirection(1))[1]);
+//        return new int[]{newX, newY};
+//    }
+//
+//    public int[] getLeftLocation(){
+//        int newX = x + Main.directionToMove(newDirection(-1))[0];
+//        int newY = y + Main.directionToMove(newDirection(-1))[1];
+//        //System.out.println("left location " + newX + "," + newY + " after moving into " + Main.directionToMove(newDirection(-1))[0] + "," +  Main.directionToMove(newDirection(-1))[1]);
+//
+//        return new int[]{newX, newY};
+//
+//    }
 
     public void rotate(boolean clockwise){
         direction = clockwise ? newDirection(1) : newDirection(-1);
