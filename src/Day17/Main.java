@@ -3,6 +3,9 @@ package Day17;
 import AOCutil.AOC;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -16,27 +19,115 @@ public class Main {
 
     static long[] inputValues;
 
+    static long digit6 = 0;
+
     static ArrayList<Long> output = new ArrayList<>();
 
     public static void main(String[] args) {
         String output = solveProgram("input");
         System.out.println("Day 17 Part 1: " + output);
 
-        long beginValue = 1;
+        long beginValue = 216140605292502L;
 
         setupProgram("input");
 
-        long result = bruteForce(beginValue);
+
+        //long result = bruteForce(beginValue);
+
+        List<Integer> list = Arrays.stream(program).boxed().toList();
+        List<Integer> loop = list.subList(0, list.size() - 2);
+
+
+        long p2 = Part2.reverseEngineer(loop, list, 0L);
+
+        System.out.println("Day 17 Part 2: " + p2 );
     }
+
 
     public static long bruteForce(long beginValue){
         long i = beginValue;
         int difference = 10;
         while(difference != 0){
-            difference = iterateProgram(i);
+            //System.out.println("running with A = " + i);
+            long[] differenceArray = iterateProgram(i);
 
-            System.out.println("A = " + i + " diff = " + difference + " output length = " + output.size() + " output: " + generateOutput());
-            i = adjust(i, difference);
+            difference = arraySum(differenceArray);
+
+            System.out.println("A = " + i + " B = " + RegisterB + " C = " + RegisterC  + " diff = " + difference + " output length = " + output.size() + " output: " + generateOutput() + " digit 6 found on " + digit6);
+            i = smartAdjust(i, differenceArray);
+            //System.out.println("i = " + i);;
+        }
+        return i;
+    }
+
+    private static int arraySum(long[] differenceArray) {
+        int sum = 0;
+        for(long value : differenceArray){
+            sum += value;
+        }
+        return sum;
+    }
+
+    private static long smartAdjust(long i, long[] diff){
+        int outputSize = output.size();
+        int programLength = program.length;
+        int last = outputSize - 1;
+
+        if(outputSize < programLength) {
+            i *= 1.2;
+            System.out.println("adding digits");
+        } else if (outputSize > programLength) {
+            i *= 0.8;
+            System.out.println("removing digits");
+        } else if (output.get(last) > program[last]) {
+            System.out.println("adjusting last up");
+            i *= 1.01;
+        } else if (output.get(last) < program[last]) {
+            System.out.println("adjusting last down");
+            i *= 0.99;
+        } else if (output.get(last-1) < program[last-1]) {
+            System.out.println("adjusting last - 1 up");
+            i *= 1.001;
+        } else if (output.get(last-1) > program[last-1]) {
+            System.out.println("adjusting last - 1 down");
+            i *= 0.999;
+        } else if (output.get(last-2) > program[last-2]) {
+            System.out.println("adjusting last - 2 up");
+            i *= 1.0001;
+        } else if (output.get(last-2) < program[last-2]) {
+            System.out.println("adjusting last - 2 down");
+            i *= 0.9999;
+        }else if (output.get(last-3) > program[last-3]) {
+            System.out.println("adjusting last - 3 up");
+            i *= 1.00001;
+        } else if (output.get(last-3) < program[last-3]) {
+            System.out.println("adjusting last - 3 down");
+            i *= 0.99999;
+        }else if (output.get(last-4) > program[last-4]) {
+            System.out.println("adjusting last - 4 up");
+            i *= 1.000001;
+        } else if (output.get(last-4) < program[last-4]) {
+            System.out.println("adjusting last - 4 down");
+            i *= 0.999999;
+        }else if (output.get(last-5) > program[last-5]) {
+            System.out.println("adjusting last - 5 up");
+            i *= 1.0000001;
+        } else if (output.get(last-5) < program[last-5]) {
+            System.out.println("adjusting last - 5 down");
+            i *= 0.9999999;
+        } else if (output.get(last-6) > program[last-6]) {
+            System.out.println("adjusting last - 6 up");
+            i += 1;
+        } else if (output.get(last-6) < program[last-6]) {
+            System.out.println("adjusting last - 6 down");
+            i -= 1;
+        }
+        else if(output.get(last-6) == program[last-6]){
+            System.out.println("digit 6 found");
+            digit6 = i;
+        }
+        else {
+            i++;
         }
         return i;
     }
@@ -60,13 +151,31 @@ public class Main {
         inputValues = new long[]{RegisterB, RegisterC};
     }
 
-    public static int iterateProgram(long registerValue){
+    public static long[] iterateProgram(long registerValue){
         resetProgram(registerValue);
 
         runProgram();
 
-        int diff = compareOutput();
+        long[] difference = getDifference();
+        //int diff = compareOutput();
 
+        //return diff;
+        return difference;
+    }
+
+    private static long[] getDifference(){
+        int programLength = program.length;
+        int outputLength = output.size();
+        long[] diff = new long[Math.max(programLength, outputLength)];
+        for (int i = 0; i < Math.max(programLength,outputLength); i++) {
+            if(i >= programLength){
+                diff[i] = output.get(i);
+            } else if (i >= outputLength) {
+                diff[i] = program[i];
+            }else {
+                diff[i] = Math.abs(program[i] - output.get(i));
+            }
+        }
         return diff;
     }
 
@@ -176,27 +285,30 @@ public class Main {
         RegisterA = division(operand);
     }
 
-    private static int division(int operand) {
+    private static long division(int operand) {
         long numerator = RegisterA;
-        int denominator = (int) Math.pow(2,combo(operand));
-        System.out.println("RegisterB = " + RegisterB);;
-        System.out.println("operand = " + operand);
-        System.out.println("combo(operand) = " + combo(operand));
-        System.out.println("denominator = " + denominator);
+        long denominator = (long) Math.pow(2,combo(operand));
+//        System.out.println("RegisterB = " + RegisterB);
+//        System.out.println("RegisterA = " + RegisterA);
+//        System.out.println("operand = " + operand);
+//        System.out.println("combo(operand) = " + combo(operand));
+//        System.out.println("denominator = " + denominator);
 
         long result = numerator/denominator;
         //System.out.println("division result = " + result);
         //TODO truncate
-        return (int)result;
+        return result;
     }
 
     private static void bxl(int operand) {
         RegisterB = bitwiseXOR(RegisterB,operand);
+        //System.out.println("B XOR 1 = " + RegisterB);
     }
 
     private static void bst(int operand) {
         //TODO keep lowest 3 bits
         RegisterB = combo(operand)%8;
+        //System.out.println("A % 8 = " + RegisterB);
     }
 
     private static void jnz(int operand) {
@@ -221,11 +333,12 @@ public class Main {
     }
 
     private static void bdv(int operand) {
-        RegisterB = (int) division(operand);
+        RegisterB = division(operand);
     }
 
     private static void cdv(int operand) {
-        RegisterC = (int) division(operand);
+        RegisterC = division(operand);
+        //System.out.println("A / 2^B = " + RegisterC);
     }
 
     private static void printInformation(){
