@@ -1,31 +1,22 @@
 package Day17;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Part2 {
-    private static final String REG_A = "A";
-    private static final String REG_B = "B";
-    private static final String REG_C = "C";
 
-    public static long comboOperand(int operand, Map<String, Long> regs) {
+    public static long combo(int operand, long[] Registers) {
         return switch (operand) {
-            case 4 -> regs.get(REG_A);
-            case 5 -> regs.get(REG_B);
-            case 6 -> regs.get(REG_C);
+            case 4 -> Registers[0];
+            case 5 -> Registers[1];
+            case 6 -> Registers[2];
             default -> operand;
         };
     }
 
-    public static List<Integer> runProgram(List<Integer> program, long initialA) {
-        Map<String, Long> regs = new HashMap<>();
-        regs.put(REG_A, initialA);
-        regs.put(REG_B, 0L);
-        regs.put(REG_C, 0L);
+    public static List<Integer> runProgram(List<Integer> program, long A) {
 
-        long[] Registers = new long[]{initialA, 0L, 0L};
+        long[] Registers = new long[]{A, 0L, 0L};
 
         int pointer = 0;
         List<Integer> output = new ArrayList<>();
@@ -37,57 +28,53 @@ public class Part2 {
 
             switch (opcode) {
                 case 0:
-                    regs.put(REG_A, regs.get(REG_A) / (1L << comboOperand(operand, regs)));
+                    Registers[0] = Registers[0] / (1L << combo(operand, Registers));
                     break;
                 case 1:
-                    regs.put(REG_B, regs.get(REG_B) ^ operand);
+                    Registers[1] = Registers[1] ^ operand;
                     break;
                 case 2:
-                    regs.put(REG_B, comboOperand(operand, regs) % 8);
+                    Registers[1] = combo(operand, Registers) % 8;
                     break;
                 case 3:
-                    if (regs.get(REG_A) != 0) {
+                    if(Registers[1] != 0){
                         pointer = operand;
                     }
                     break;
                 case 4:
-                    regs.put(REG_B, regs.get(REG_B) ^ regs.get(REG_C));
+                    Registers[1] = Registers[1] ^ Registers[2];
                     break;
                 case 5:
-                    output.add((int) (comboOperand(operand, regs) % 8));
+                    output.add((int) (combo(operand, Registers) % 8));
                     break;
                 case 6:
-                    regs.put(REG_B, regs.get(REG_A) / (1L << comboOperand(operand, regs)));
+                    Registers[1] = Registers[0] / (1L << combo(operand, Registers));
                     break;
                 case 7:
-                    regs.put(REG_C, regs.get(REG_A) / (1L << comboOperand(operand, regs)));
+                    Registers[2] = Registers[0] / (1L << combo(operand, Registers));
                     break;
             }
         }
-
         return output;
     }
 
 
-    public static long reverseEngineer(List<Integer> loop, List<Integer> target, long aSoFar) {
+    public static long reverseEngineer(List<Integer> loop, List<Integer> target, long midA) {
         if (target.isEmpty()) {
-            return aSoFar;
+            return midA;
         }
 
         for (int next3Bits = 0; next3Bits < 8; next3Bits++) {
-            long candidateA = aSoFar * 8 + next3Bits;
+            long possibleA = midA * 8 + next3Bits;
 
-            // Extend register A by 3 bits and see if we output the last token in the target
-            List<Integer> programOutput = runProgram(loop, candidateA);
-            if (!programOutput.isEmpty() && programOutput.get(programOutput.size() - 1).equals(target.get(target.size() - 1))) {
-                try {
-                    return reverseEngineer(loop, target.subList(0, target.size() - 1), candidateA);
-                } catch (IllegalStateException e) {
-                    continue;
+            List<Integer> output = runProgram(loop, possibleA);
+            if (!output.isEmpty() && output.get(output.size() - 1).equals(target.get(target.size() - 1))) {
+                long result = reverseEngineer(loop, target.subList(0, target.size() - 1), possibleA);
+                if (result != -1) {
+                    return result;
                 }
             }
         }
-
-            throw new IllegalStateException("No valid value for register A found");
+        return -1;
     }
 }
