@@ -52,6 +52,26 @@ public class AOC {
         }
     }
 
+    public static void printIntMapFormatted(int[][] g) {
+        int maxWidth = 6; // Fixed width for numbers (adjust as needed)
+        String format = "%-" + maxWidth + "s"; // Left-aligned fixed width
+
+        for (int i = 0; i < g.length; i++) {
+            for (int j = 0; j < g[0].length; j++) {
+                int value = Integer.MAX_VALUE;
+                if (g[i][j] < value){
+                    value = g[i][j];
+                }
+                if(value == Integer.MAX_VALUE) {
+                    System.out.printf(format, "X");
+                }else{
+                    System.out.printf(format, value);
+                }
+            }
+            System.out.println();
+        }
+    }
+
     public static boolean[][] convertCharToBoolean(char[][] chars, char trueToken) {
         boolean[][] bool = new boolean[chars.length][chars[0].length];
         for (int i = 0; i < chars.length; i++) {
@@ -108,5 +128,16 @@ public class AOC {
             }
         }
         return sum;
+    }
+
+    public static int[]  coordsOfChar(char[][] map, char token){
+        for (int x = 0; x < map.length; x++) {
+            for (int y = 0; y < map[0].length; y++) {
+                if(map[x][y] == token){
+                    return new int[]{y,x};
+                }
+            }
+        }
+        return new int[]{-1,-1};
     }
 }
