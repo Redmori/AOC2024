@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        String[] input = AOC.input("src/Day20/sampleinput.txt");
+        String[] input = AOC.input("src/Day20/input.txt");
 
         char[][] charMap = AOC.convertStringToChar(input);
         boolean[][] walls = AOC.convertCharToBoolean(charMap, '#');
@@ -39,12 +39,9 @@ public class Main {
 
     private static long loopPath(List<int[]> path, boolean[][] walls, int[][] pathMap){
         long sum = 0;
-        int i = 0;
         System.out.println("path length = " + path.size());
         for(int[] tile : path){
             sum += getPaths(pathMap, walls, tile);
-            //System.out.println(i + "/" + path.size());
-            i++;
         }
 
         return sum;
@@ -55,14 +52,12 @@ public class Main {
         int y = position[1];
         int radius = 20;
         int sum = 0;
-        int maxScore = pathMap[y][x] - 50;
-        //System.out.println("maxScore = " + maxScore);;
-        for(int i = -radius; i < radius; i++){
-            for (int j = -radius + Math.abs(i); j < radius - Math.abs(i); j++) {
+        int maxScore = pathMap[y][x] - 100;
+        for(int i = -radius; i <= radius; i++){
+            for (int j = -radius + Math.abs(i); j <= radius - Math.abs(i); j++) {
                 if(isValid(walls, y + i, x + j) && !walls[y + i][x + j]){
                     if(pathMap[y + i][x + j] <= (maxScore - Math.abs(i) - Math.abs(j))){
                         sum++;
-                        //System.out.println("Cheating from " + y + "," + x + " to " + (y + i) + "," + (x + j));
                     }
                 }
             }
