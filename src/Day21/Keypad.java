@@ -130,10 +130,52 @@ public class Keypad {
             }
         }
 
+
+
+        ArrayList<ArrayList<Character>> test = new ArrayList<>();
+        if(dx < 0){
+            if(!(pointerY == avoidY && tokenX == avoidX )) {
+                test.add(pathHV);
+            }else{
+                test.add(pathVH);
+            }
+        }
+        if(dy < 0 && test.isEmpty()){
+            if(!(pointerX == avoidX && tokenY == avoidY )) {
+                test.add(pathVH);
+            }else{
+                test.add(pathHV);
+            }
+        }
+        if(dy > 0 && test.isEmpty()){
+            if(!(pointerX == avoidX && tokenY == avoidY )) {
+                test.add(pathVH);
+            }else{
+                test.add(pathHV);
+            }
+        }
+        if(dx > 0 && test.isEmpty()){
+            if(!(pointerY == avoidY && tokenX == avoidX )) {
+                test.add(pathHV);
+            }else{
+                test.add(pathVH);
+            }
+        }
+        if(test.isEmpty()){
+            test.add(pathHV);
+        }
+
+
+
+
         pointerY = tokenY;
         pointerX = tokenX;
 
-        return paths;
+
+        return test;
+
+
+        //return paths;
     }
 
     private static void addHorizontalMovement(int dx, List<Character> path) {
