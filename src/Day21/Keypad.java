@@ -8,6 +8,9 @@ public class Keypad {
     int pointerX;
     int pointerY;
 
+    int startPointerX;
+    int startPointerY;
+
     int avoidX;
     int avoidY;
 
@@ -22,8 +25,10 @@ public class Keypad {
         keys[2] = new char[]{'1', '2', '3'};
         keys[3] = new char[]{'X', '0', 'A'};
 
-        pointerX = 2;
-        pointerY = 3;
+        startPointerX = 2;
+        startPointerY = 3;
+
+        pointerReset();
 
         avoidX = 0;
         avoidY = 3;
@@ -31,18 +36,29 @@ public class Keypad {
         target = null;
     }
 
+
     public Keypad(Keypad t){
         keys = new char[2][3];
         keys[0] = new char[]{'X', '^', 'A'};
         keys[1] = new char[]{'<', 'v', '>'};
 
-        pointerX = 2;
-        pointerY = 0;
+        startPointerX = 2;
+        startPointerY = 0;
+
+        pointerReset();
 
         avoidX = 0;
         avoidY = 0;
 
         target = t;
+    }
+
+    public void pointerReset() {
+        pointerX = startPointerX;
+        pointerY = startPointerY;
+
+        if(target != null)
+            target.pointerReset();
     }
 
     public ArrayList<ArrayList<Character>> getChainedInput(ArrayList<Character> output) {

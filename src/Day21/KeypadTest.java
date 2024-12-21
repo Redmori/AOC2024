@@ -130,6 +130,8 @@ public class KeypadTest {
     @Test
     public void samplerestult5(){
         ArrayList<ArrayList<Character>> input = prepareAllKeypads(new char[]{'3','7','9','A'});
+        ArrayList<String> actuaStrings = Keypad.allSequenceToString(input);
+        System.out.println(actuaStrings.get(0));
         int complexity = input.getFirst().size();
         assertEquals(64, complexity);
     }

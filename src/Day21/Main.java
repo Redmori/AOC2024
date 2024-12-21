@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Main{
 
         public static void main(String[] args) {
-                String[] input = AOC.input("src/Day21/sampleinput.txt");
+                String[] input = AOC.input("src/Day21/input.txt");
 
                 char[][] chars = AOC.convertStringToChar(input);
 
@@ -29,11 +29,21 @@ public class Main{
                 for(ArrayList<Character> input : inputs){
                         int number = getNumericPart(input);
                         ArrayList<ArrayList<Character>> result =  kp.getChainedInput(input);
-                        sum += result.getFirst().size() * number;
+                        sum += getShortestAray(result) * number;
                         System.out.println(result.getFirst().size() + " * " + number);
                 }
 
                 return sum;
+        }
+
+        private static int getShortestAray(ArrayList<ArrayList<Character>> arrays){
+                int shortest = Integer.MAX_VALUE;
+                for(ArrayList<Character> a : arrays){
+                        if(a.size() < shortest){
+                                shortest = a.size();
+                        }
+                }
+                return shortest;
         }
 
         private static int getNumericPart(ArrayList<Character> input) {
