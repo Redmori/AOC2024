@@ -168,6 +168,46 @@ public class KeypadTest {
 
 
 
+    @Test
+    public void testSmartInput1(){
+        long amount = Main.smartInput("<A^A>^^AvvvA", 2);
+        System.out.println("amount = " + amount);
+        System.out.println("Sequence: " + Main.seqs[0]);
+        assertEquals(68, amount);
+
+    }
+
+    @Test
+    public void testSmartInput2(){
+        long amount = Main.smartInput("^^^A<AvvvA>A", 2);
+        System.out.println("amount = " + amount);
+        System.out.println("Sequence: " + Main.seqs[0]);
+        assertEquals(60, amount);
+    }
+
+    @Test
+    public void testSmartInput3(){
+        long amount = Main.smartInput("^<<A^^A>>AvvvA", 2);
+        System.out.println("amount = " + amount);
+        assertEquals(68, amount);
+    }
+
+    @Test
+    public void testSmartInput4(){
+        long amount = Main.smartInput("^^<<A>A>AvvA", 2);
+        System.out.println("amount = " + amount);
+        assertEquals(64, amount);
+    }
+
+    @Test
+    public void testSmartInput5(){
+        long amount = Main.smartInput("^A<<^^A>>AvvvA", 2);
+        System.out.println("amount = " + amount);
+        assertEquals(64, amount);
+    }
+
+
+
     private static ArrayList<ArrayList<Character>> prepareKeypad(char[] keys) {
         Keypad kp = new Keypad();
         ArrayList<Character> list = new ArrayList<>();
