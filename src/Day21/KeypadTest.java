@@ -86,7 +86,6 @@ public class KeypadTest {
         assertEquals(true, actualStrings.contains(expectedString));
     }
 
-    //Last keypad can be inefficience (down left down is fine)
     @Ignore
     @Test
     public void testSample3pad(){
