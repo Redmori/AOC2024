@@ -34,6 +34,14 @@ public class AOC {
         return converted;
     }
 
+    public static int[]  convertStringToInt(String[] input){
+        int[] converted = new int[input.length];
+        for (int i = 0; i < input.length; i++) {
+            converted[i] = Integer.parseInt(input[i]);
+        }
+        return converted;
+    }
+
     public static void printInput(char[][] input){
         for(char[] row : input){
             for(char c : row){
@@ -81,6 +89,8 @@ public class AOC {
         }
         return bool;
     }
+
+
 
     public static void printBoolMap(boolean[][] map){
         for(boolean[] row : map){
