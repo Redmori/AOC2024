@@ -2,8 +2,8 @@ package Day23;
 
 import AOCutil.AOC;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class Main{
     public static void main(String[] args) {
@@ -15,23 +15,79 @@ public class Main{
 
         printComputers(computers);
 
-        //int p1 = countTripples(computers);
         ArrayList<String> tripples = getTripples(computers);
 
-        for (String tripple : tripples){
-            System.out.println(tripple);
-        }
 
         ArrayList<String> tripplesWithT = getTripplesWithT(tripples);
-
-        System.out.println();
-        for (String tripple : tripplesWithT){
-            System.out.println(tripple);
-        }
 
 
         System.out.println("Day 23 Part 1: " + tripplesWithT.size());
 
+
+        ArrayList<Computer> largets = findLargestLAN(computers);
+
+        String p2 = sortLAN(largets);
+
+        System.out.println("Day 23 Part 2: " + p2);
+
+
+    }
+
+    public static String sortLAN(ArrayList<Computer> computers){
+        computers.sort(Comparator.comparing(computer -> computer.name));
+
+        StringBuilder sb = new StringBuilder();
+
+        for(Computer computer : computers){
+            sb.append(computer.name);
+            sb.append(",");
+        }
+
+        return sb.toString();
+    }
+
+
+    public static ArrayList<Computer> findLargestLAN(ArrayList<Computer> computers) {
+        ArrayList<Computer> largestLAN = new ArrayList<>();
+        generateLAN(new ArrayList<>(), computers, largestLAN);
+        return largestLAN;
+    }
+
+
+    private static void generateLAN(ArrayList<Computer> currentLAN, ArrayList<Computer> additions, ArrayList<Computer> largestLAN) {
+        if (additions.isEmpty()) {
+            if (currentLAN.size() > largestLAN.size()) {
+                largestLAN.clear();
+                largestLAN.addAll(currentLAN);
+            }
+            return;
+        }
+
+        for (int i = 0; i < additions.size(); i++) {
+            Computer addition = additions.get(i);
+
+            boolean canAdd = true;
+            for (Computer computer : currentLAN) {
+                if (!computer.contains(addition)) {
+                    canAdd = false;
+                    break;
+                }
+            }
+
+            if (canAdd) {
+                currentLAN.add(addition);
+
+                ArrayList<Computer> newAdditions = new ArrayList<>();
+                for (int j = i + 1; j < additions.size(); j++) {
+                    if (addition.contains(additions.get(j))) {
+                        newAdditions.add(additions.get(j));
+                    }
+                }
+
+                generateLAN(currentLAN, newAdditions, largestLAN);
+                currentLAN.remove(currentLAN.size() - 1);
+            }
+        }
     }
 
     private static ArrayList<String> getTripplesWithT(ArrayList<String> tripples) {
@@ -73,14 +129,6 @@ public class Main{
             }
         }
         return tripples;
-    }
-
-    private static int countTripples(ArrayList<Computer> computers) {
-        int sum = 0;
-        for(Computer computer : computers){
-                sum += computer.isPartOfTripple();
-        }
-        return sum / 3;
     }
 
     private static void generateConnections(ArrayList<Computer> computers, String[] input) {

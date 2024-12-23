@@ -1,6 +1,9 @@
 package Day23;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 public class Computer {
 
@@ -8,47 +11,30 @@ public class Computer {
 
     ArrayList<Computer> connections;
 
+    Set<Computer> connected;
+
     public Computer(String nm){
         name = nm;
         connections = new ArrayList<>();
+        connected = new HashSet<>();
     }
 
     public void connect(Computer otherComputer){
         connections.add(otherComputer);
     }
 
-    public int isPartOfTripple(){
-        int sum = 0;
-        for (Computer connection : connections){
-            sum += isDoubleConnectedTo(connection);
-
-        }
-        return sum;
-    }
-
-    public int isDoubleConnectedTo(Computer c){
-        int sum = 0;
-        for (Computer connection : connections){
-            if(connection.contains(c)){
-                sum ++;
-            }
-        }
-        return sum;
-    }
 
     public boolean contains(Computer c){
         return connections.contains(c);
     }
 
-    public boolean nameStartsWithT(){
-        return name.charAt(0) == 'T';
-    }
-
     public String toString(){
-        StringBuilder sb = new StringBuilder(name);
+        StringBuilder sb = new StringBuilder(name + " [");
         for(Computer connection : connections){
             sb.append(" ").append(connection.name);
         }
+        sb.append("]");
         return sb.toString();
     }
+
 }
